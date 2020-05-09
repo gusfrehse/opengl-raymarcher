@@ -47,7 +47,7 @@ int main(int, char**){
     const int winHeight = 450;
     SDL_Window *window = init(winWidth, winHeight, windowFlags);
 
-    // gl calls
+    // GL calls
     glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
     glViewport(0, 0, winWidth, winHeight);
     auto shadersSource = Shader::source2shader("test.glsl");
@@ -96,3 +96,4 @@ int main(int, char**){
     SDL_Quit();
     return 0;
 }
+
