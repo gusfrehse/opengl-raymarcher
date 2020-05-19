@@ -13,7 +13,6 @@ public:
     Shader(std::string source, GLenum shaderType);
     ~Shader();
     void log();
-    void use();
 
     static std::pair<std::string, std::string> source2shader(std::string path);
 };
@@ -25,5 +24,6 @@ public:
 
     ShaderProgram(Shader vertex, Shader frag);
     void log();
+    void use();
 };
 #endif

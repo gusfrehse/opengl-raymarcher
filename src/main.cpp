@@ -1,5 +1,6 @@
 #include <iostream>
 #include <SDL2/SDL.h>
+#include <glm/glm.hpp>
 #include "glad/glad.h"
 #include "shader.hpp"
 
@@ -29,7 +30,7 @@ SDL_Window * init(int width, int height, int flags)
     }
 
     SDL_GLContext context = SDL_GL_CreateContext(win);
-    if (context = nullptr)
+    if (context == nullptr)
     {
 	logSDLError(std::cout, "SDL_CreateContext");
     }
@@ -41,10 +42,22 @@ SDL_Window * init(int width, int height, int flags)
     return win;
 }
 
+glm::vec2 mainQuad[] = {
+    glm::vec2(-1.0f, -1.0f), // bottom left
+    glm::vec2(-1.0f,  1.0f), // top left
+    glm::vec2( 1.0f,  1.0f), // top right
+    glm::vec2( 1.0f, -1.0f)  // bottom right
+};
+
+GLuint mainQuadIndices[] = {
+    0, 1, 3,
+    1, 2, 3
+};
+
 int main(int, char**){
     int windowFlags = SDL_WINDOW_OPENGL;
     const int winWidth = 800;
-    const int winHeight = 450;
+    const int winHeight = 800;
     SDL_Window *window = init(winWidth, winHeight, windowFlags);
 
     // GL calls
@@ -55,6 +68,27 @@ int main(int, char**){
     Shader fragment(shadersSource.second, GL_FRAGMENT_SHADER);
 
     ShaderProgram test(vertex, fragment);
+
+    // Setting vao, vbo, and ebo
+    GLuint mainVAO, mainVBO, mainEBO;
+
+    glGenVertexArrays(1, &mainVAO);
+    glGenBuffers(1, &mainVBO);
+    glGenBuffers(1, &mainEBO);
+
+    glBindVertexArray(mainVAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, mainVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(mainQuad), mainQuad, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mainEBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(mainQuadIndices),
+		 mainQuadIndices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE,
+			  2 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
 
     bool quit = false;
     SDL_Event e;
@@ -68,10 +102,6 @@ int main(int, char**){
 		{
 		case SDLK_ESCAPE:
 		    quit = true;
-		    break;
-		case 'f':
-		    windowFlags ^= SDL_WINDOW_FULLSCREEN_DESKTOP;
-		    SDL_SetWindowFullscreen(window, windowFlags);
 		    break;
 		default:
 		    break;
@@ -88,7 +118,9 @@ int main(int, char**){
 	}
 
 	glClear(GL_COLOR_BUFFER_BIT);
-
+	test.use();
+	glBindVertexArray(mainVAO);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	SDL_GL_SwapWindow(window);
     }
 
@@ -96,4 +128,3 @@ int main(int, char**){
     SDL_Quit();
     return 0;
 }
-

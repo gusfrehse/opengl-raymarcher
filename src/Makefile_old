@@ -1,0 +1,28 @@
+cxx = clang++
+include_dirs = -I. -I./include/
+libs_dirs = -L./lib/x64/
+libs = -lSDL2main -lSDL2 -lShell32
+cxx_flags = -Wall
+linker_flags = -Xlinker /subsystem:windows
+
+
+game.exe: main.o glad.o shader.o
+	$(cxx) $^ -o $@ $(libs_dirs) $(libs) $(linker_flags)
+
+main.o : main.cpp
+	$(cxx) -c $^ $(include_dirs) $(cxx_flags)
+
+glad.o : glad.c
+	$(cxx) -c $^ $(include_dirs) $(cxx_flags)
+
+shader.o : shader.cpp
+	$(cxx) -c $< $(include_dirs) $(cxx_flags)
+
+run: game.exe
+	./game.exe
+
+.PHONY: clean
+
+clean:
+	del .\*.o
+	del game.exe

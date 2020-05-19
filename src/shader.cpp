@@ -6,7 +6,7 @@
 #include <sstream>
 
 Shader::Shader(std::string source, GLenum shaderType)
-    : type{ shaderType }, id{ glCreateShader(shaderType) }
+    : id{ glCreateShader(shaderType) }, type{ shaderType }
 {
     const char* csource = source.c_str();
     glShaderSource(id, 1, &csource, NULL);
@@ -82,6 +82,7 @@ std::pair<std::string, std::string> Shader::source2shader(std::string path)
 	    // 14 == size_in_chars("arandomstring\n")
 	    fs = sources[1] = buffer.str().substr(pos + 14);
 
+
 	    return std::make_pair(vs,fs);
 	}
     }
@@ -127,4 +128,10 @@ void ShaderProgram::log()
 	std::cout << "The program << id << is not a program, but was requested"
 		  << " to be logged as one" << std::endl;
     }
+}
+
+void ShaderProgram::use()
+{
+    glUseProgram(id);
+    return;
 }

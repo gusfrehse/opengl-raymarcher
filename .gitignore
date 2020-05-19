@@ -1,0 +1,8 @@
+.clangd/
+*~
+CMakeFiles/
+compile_commands.json
+build/*
+#*#
+sdl2-config
+*.org

@@ -1,3 +1,0 @@
-* Game1
-* * What is this about?
-Making a 3d game using SDL2 and OpenGL.
