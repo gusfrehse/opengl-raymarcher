@@ -99,25 +99,25 @@ int main(int, char**){
     SDL_Event e;
     while (!quit)
     {
-	std::cout << camera.front.x << " " << camera.front.y << " "
-		  << camera.front.z << std::endl;
 	while (SDL_PollEvent(&e))
 	{
 	    if (e.type == SDL_KEYDOWN)
 	    {
+		// TODO variable speed at camera class
+		float speed = 0.1f;
 		switch (e.key.keysym.sym)
 		{
 		case SDLK_w:
-		    camera.translate(camera.pos + 0.01f * camera.front);
+		    camera.translate(camera.pos + speed * camera.front);
 		    break;
 		case SDLK_a:
-		    camera.translate(camera.pos - 0.01f * camera.right);
+		    camera.translate(camera.pos - speed * camera.right);
 		    break;
 		case SDLK_s:
-		    camera.translate(camera.pos - 0.01f * camera.front);
+		    camera.translate(camera.pos - speed * camera.front);
 		    break;
 		case SDLK_d:
-		    camera.translate(camera.pos + 0.01f * camera.right);
+		    camera.translate(camera.pos + speed * camera.right);
 		    break;
 		case SDLK_ESCAPE:
 		    quit = true;
@@ -133,13 +133,19 @@ int main(int, char**){
 	    else if (e.type == SDL_MOUSEMOTION)
 	    {
 		// TODO: make variable sensitivity
-		camera.rotate(e.motion.xrel * 1.0f, camera.up);
-		camera.rotate(e.motion.yrel * 1.0f, camera.right);
+		constexpr float sensitivity = 0.01;
+		camera.rotate(e.motion.xrel * -sensitivity, camera.up);
+		camera.rotate(e.motion.yrel * -sensitivity, camera.right);
 	    }
 	}
 
 	glClear(GL_COLOR_BUFFER_BIT);
 	test.use();
+	test.set("cameraPosition", camera.pos);
+	test.set("cameraFront", camera.front);
+	test.set("cameraUp", camera.up);
+	test.set("cameraRight", camera.right);
+	test.set("cameraPosition", camera.pos);
 	glBindVertexArray(mainVAO);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	SDL_GL_SwapWindow(window);

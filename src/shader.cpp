@@ -4,6 +4,8 @@
 #include <fstream>
 #include <utility>
 #include <sstream>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 Shader::Shader(std::string source, GLenum shaderType)
     : id{ glCreateShader(shaderType) }, type{ shaderType }
@@ -134,4 +136,10 @@ void ShaderProgram::use()
 {
     glUseProgram(id);
     return;
+}
+
+void ShaderProgram::set(std::string variableName, glm::vec3 vector)
+{
+    GLint location = glGetUniformLocation(id, variableName.c_str());
+    glUniform3fv(location, 1, glm::value_ptr(vector));
 }

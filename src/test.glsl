@@ -11,6 +11,11 @@ arandomstring
 in vec2 uv;
 out vec4 FragColor;
 
+uniform vec3 cameraPosition;
+uniform vec3 cameraFront;
+uniform vec3 cameraUp;
+uniform vec3 cameraRight;
+
 float sphereSDF(vec3 point, vec3 sphere, float radius)
 {
     return length(point - sphere) - radius;
@@ -40,10 +45,10 @@ vec3 calculateNormal(vec3 point)
 
 void main()
 {
-    const vec3 cameraPosition = vec3(0.0, 0.0,  0.0);
-    const vec3 cameraFront = vec3(0.0, 0.0, -1.0);
-    const vec3 cameraUp = vec3(0.0, 1.0, 0.0);
-    const vec3 cameraRight = cross(cameraFront, cameraUp); // 1 0 0
+    //const vec3 cameraPosition = vec3(0.0, 0.0,  0.0);
+    //const vec3 cameraFront = vec3(0.0, 0.0, -1.0);
+    //const vec3 cameraUp = vec3(0.0, 1.0, 0.0);
+    //const vec3 cameraRight = cross(cameraFront, cameraUp); // 1 0 0
     const vec3 dir = normalize(cameraFront + (uv.x * cameraRight)+(uv.y * cameraUp));
 
     const vec3 lightPosition = vec3(-2.0, 3.0, 0.0);
@@ -61,8 +66,8 @@ void main()
 	if (abs(dist) < 0.0001)
 	{
 	    vec3 normal = calculateNormal(point);
-	    color = clamp(dot(normal, lightPosition - point), 0.0, 1.0) *
-		lightColor;
+	    color = clamp(dot(normal, lightPosition - point) * lightColor,
+			  0.0, 1.0);
 	    break;
 	}
 	stepSize = dist;
