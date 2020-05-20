@@ -40,6 +40,9 @@ SDL_Window * init(int width, int height, int flags)
 	std::cout << "gladLoadGLLloader error" << std::endl;
     }
 
+    //SDL_ShowCursor(SDL_DISABLE);
+    SDL_SetRelativeMouseMode(SDL_TRUE);
+
     return win;
 }
 
@@ -97,6 +100,9 @@ int main(int, char**){
 
     bool quit = false;
     SDL_Event e;
+    Uint64 before = SDL_GetPerformanceCounter();
+    Uint64 now = SDL_GetPerformanceCounter();
+    double deltaTime = 0.0;
     while (!quit)
     {
 	while (SDL_PollEvent(&e))
@@ -104,7 +110,7 @@ int main(int, char**){
 	    if (e.type == SDL_KEYDOWN)
 	    {
 		// TODO variable speed at camera class
-		float speed = 0.1f;
+		float speed = 2.0f * deltaTime;
 		switch (e.key.keysym.sym)
 		{
 		case SDLK_w:
@@ -133,7 +139,7 @@ int main(int, char**){
 	    else if (e.type == SDL_MOUSEMOTION)
 	    {
 		// TODO: make variable sensitivity
-		constexpr float sensitivity = 0.01;
+		constexpr float sensitivity = 0.001;
 		camera.rotate(e.motion.xrel * -sensitivity, camera.up);
 		camera.rotate(e.motion.yrel * -sensitivity, camera.right);
 	    }
@@ -149,6 +155,15 @@ int main(int, char**){
 	glBindVertexArray(mainVAO);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	SDL_GL_SwapWindow(window);
+
+	now = 0;
+	now = SDL_GetPerformanceCounter();
+	deltaTime = (double)((now - before)) /
+	    SDL_GetPerformanceFrequency();
+	//std::cout << "Frame Time: "
+	//	  << deltaTime * 1000
+	//	  << "ms" << std::endl;
+	before = now;
     }
 
 
