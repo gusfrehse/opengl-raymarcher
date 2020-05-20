@@ -4,8 +4,8 @@ cmake_minimum_required(VERSION 3.1...3.15)
 project(opengl-raymarcher)
 
 add_executable(raymarcher
-  src/main.cpp src/shader.cpp include/shader.hpp src/glad.c include/glad/glad.h
-  include/KHR/khrplatform.h
+  src/main.cpp src/shader.cpp src/shader.hpp src/camera.cpp src/camera.hpp
+  src/glad.c include/glad/glad.h include/KHR/khrplatform.h
   )
 target_include_directories(raymarcher PUBLIC include c:/mingw64/include)
 

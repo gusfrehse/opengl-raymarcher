@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include "glad/glad.h"
 #include "shader.hpp"
+#include "camera.hpp"
 
 void logSDLError(std::ostream &os, const std::string &msg)
 {
@@ -89,17 +90,35 @@ int main(int, char**){
 			  2 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
+    Camera camera(glm::vec3(0.0f, 0.0f, 0.0f),
+		  glm::vec3(0.0f, 0.0f,-1.0f),
+		  glm::vec3(0.0f, 1.0f, 0.0f));
+
 
     bool quit = false;
     SDL_Event e;
     while (!quit)
     {
+	std::cout << camera.front.x << " " << camera.front.y << " "
+		  << camera.front.z << std::endl;
 	while (SDL_PollEvent(&e))
 	{
 	    if (e.type == SDL_KEYDOWN)
 	    {
 		switch (e.key.keysym.sym)
 		{
+		case SDLK_w:
+		    camera.translate(camera.pos + 0.01f * camera.front);
+		    break;
+		case SDLK_a:
+		    camera.translate(camera.pos - 0.01f * camera.right);
+		    break;
+		case SDLK_s:
+		    camera.translate(camera.pos - 0.01f * camera.front);
+		    break;
+		case SDLK_d:
+		    camera.translate(camera.pos + 0.01f * camera.right);
+		    break;
 		case SDLK_ESCAPE:
 		    quit = true;
 		    break;
@@ -111,9 +130,11 @@ int main(int, char**){
 	    {
 		quit = true;
 	    }
-	    else if (e.type == SDL_MOUSEBUTTONDOWN)
+	    else if (e.type == SDL_MOUSEMOTION)
 	    {
-		glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
+		// TODO: make variable sensitivity
+		camera.rotate(e.motion.xrel * 1.0f, camera.up);
+		camera.rotate(e.motion.yrel * 1.0f, camera.right);
 	    }
 	}
 

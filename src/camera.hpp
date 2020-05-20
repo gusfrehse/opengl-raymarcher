@@ -15,7 +15,6 @@ public:
     glm::vec3 right;
 
     Camera(glm::vec3 position, glm::vec3 fronti, glm::vec3 ups);
-    ~Camera();
 
     void rotate(float angle, glm::vec3 axis);
     void translate(glm::vec3 where);

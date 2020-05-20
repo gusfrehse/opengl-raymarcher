@@ -11,10 +11,10 @@ void Camera::rotate(float angle, glm::vec3 axis)
 {
     float angle2 = angle / 2;
     glm::quat q = glm::quat(glm::cos(angle2), glm::sin(angle2) * axis);
-    glm::quat conjugate = glm::quat(glm::cos(angle2), -glm::sin(angle2) * axis);
+    glm::quat conjugate = glm::conjugate(q);
     front = q * front * conjugate;
     up = q * up * conjugate;
-    right = q * up * conjugate;
+    right = q * right * conjugate;
 }
 
 void Camera::translate(glm::vec3 where)
